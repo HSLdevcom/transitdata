@@ -1,0 +1,43 @@
+version: '3.3'
+services:
+  pulsar-pubtrans-connect-arrival:
+    image: poc-pulsar-pubtrans-connect
+    network_mode: host
+    environment:
+      - PT_TABLE=ptroiarrival
+      - PULSAR_HOST=localhost
+    secrets:
+      - pubtrans_community_conn_string
+  pulsar-pubtrans-connect-departure:
+    image: poc-pulsar-pubtrans-connect
+    network_mode: host
+    environment:
+      - PT_TABLE=ptroideparture
+      - PULSAR_HOST=localhost
+    secrets:
+      - pubtrans_community_conn_string
+  stop-event:
+    image: poc-stop-event
+    network_mode: host
+  stop-time-update:
+    image: poc-stop-time-update
+    network_mode: host
+  trip-update:
+    image: poc-trip-update
+    network_mode: host
+  mqtt-sink:
+    image: poc-mqtt-sink
+    network_mode: host
+    environment:
+      - MAX_INFLIGHT=10000
+      - CLIENT_ID=tu-send-123
+    secrets:
+      - mqtt_broker_username
+      - mqtt_broker_password
+secrets:
+  pubtrans_community_conn_string:
+    file: ./secrets/pubtrans_community_conn_string.secret
+  mqtt_broker_username:
+    file: ./secrets/mqtt_broker_username.secret
+  mqtt_broker_password:
+    file: ./secrets/mqtt_broker_password.secret

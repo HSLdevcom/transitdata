@@ -1,0 +1,10 @@
+version: '3.3'
+services: 
+  pubtrans-redis-connect:
+    image: poc-pubtrans-redis-connect
+    network_mode: host
+    secrets: 
+      - pubtrans_community_conn_string
+secrets:
+  pubtrans_community_conn_string:
+    file: ./secrets/pubtrans_community_conn_string.secret

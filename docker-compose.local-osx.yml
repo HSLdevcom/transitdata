@@ -1,0 +1,25 @@
+# Used as an override, see https://docs.docker.com/compose/extends/#multiple-compose-files
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.local-osx.yml up -d
+version: '3.3'
+services:
+  pulsar-pubtrans-connect-arrival:
+    environment:
+      - PULSAR_HOST=host.docker.internal
+  pulsar-pubtrans-connect-departure:
+    environment:
+      - PULSAR_HOST=host.docker.internal
+  stop-event:
+    environment:
+      - PULSAR_HOST=host.docker.internal
+      - REDIS_HOST=host.docker.internal
+  stop-time-update:
+    environment:
+      - PULSAR_HOST=host.docker.internal
+      - REDIS_HOST=host.docker.internal
+  trip-update:
+    environment:
+      - PULSAR_HOST=host.docker.internal
+      - REDIS_HOST=host.docker.internal
+  mqtt-sink:
+    environment:
+      - PULSAR_HOST=host.docker.internal
