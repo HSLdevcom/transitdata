@@ -2,7 +2,7 @@
 ## General
 
 This system will poll updates to Pubtrans database (regarding departures and arrivals)
-and convert those to GTFS real-time messages using a pipeline running in Amazon Pulsar.
+and convert those to GTFS real-time messages using a pipeline created with [Apache Pulsar](https://pulsar.incubator.apache.org/).
 
 General usage pattern is to build Docker images and then run them with docker-compose.
 Services are separated to subfolders, each containing the source code and the Dockerfile.
@@ -20,6 +20,8 @@ Overall system requirements for running the system are:
 
 
 ## Usage
+
+TODO fix. Add individual projects here.
 
 1. Generate Java code for protobuf classes
  - `cd protos && ./generate-protos.sh`
