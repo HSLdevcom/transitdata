@@ -1,9 +1,9 @@
 version: '3.3'
-services: 
-  pubtrans-redis-connect:
-    image: poc-pubtrans-redis-connect
+services:
+  transitdata-cache-bootstrapper:
+    image: transitdata-cache-bootstrapper
     network_mode: host
-    secrets: 
+    secrets:
       - pubtrans_community_conn_string
 secrets:
   pubtrans_community_conn_string:

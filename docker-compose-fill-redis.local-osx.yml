@@ -2,6 +2,6 @@
 # Usage: docker-compose -f docker-compose.yml -f docker-compose.local-osx.yml up -d
 version: '3.3'
 services:
-  pubtrans-redis-connect:
+  transitdata-cache-bootstrapper:
     environment:
       - REDIS_HOST=host.docker.internal
