@@ -1,0 +1,11 @@
+@startuml
+
+!includeurl https://rawgit.com/HSLdevcom/hsl-plantuml-theme/master/hsl-theme.iuml
+
+' To visually separate interfaces
+skinparam Usecase {
+    BackgroundColor #ffffff
+    BorderColor #f092cd
+}
+
+@enduml
