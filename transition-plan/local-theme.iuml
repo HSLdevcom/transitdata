@@ -1,6 +1,6 @@
 @startuml
 
-!includeurl https://rawgit.com/HSLdevcom/hsl-plantuml-theme/master/hsl-theme.iuml
+!includeurl https://cdn.jsdelivr.net/gh/HSLdevcom/hsl-plantuml-theme/hsl-theme.iuml
 
 ' To visually separate interfaces
 skinparam Usecase {
