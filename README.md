@@ -19,9 +19,12 @@ Overall system requirements for running the system are:
 - Connection to a Pubtrans SQL Server database
 - Connection to an MQTT broker
 
-## Components
+## System Architecture & Components
 
-Projects related to this stack:
+![Alt text](transitdata_data_flow.png?raw=true "System Architecture")
+
+
+Components are stored in their own Github Repositories:
 - [transitdata-common](https://github.com/HSLdevcom/transitdata-common) contains generic components and shared constants.
 - [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) fills journey-metadata to Redis cache for the next step
 - [transitdata-pubtrans-source](https://github.com/HSLdevcom/transitdata-pubtrans-source) polls changes to Pubtrans database and publishes the events to Pulsar as "raw-data"
