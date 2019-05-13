@@ -1,7 +1,0 @@
-# Used as an override, see https://docs.docker.com/compose/extends/#multiple-compose-files
-# Usage: docker-compose -f docker-compose.yml -f docker-compose.local-osx.yml up -d
-version: '3.3'
-services:
-  transitdata-cache-bootstrapper:
-    environment:
-      - REDIS_HOST=host.docker.internal
