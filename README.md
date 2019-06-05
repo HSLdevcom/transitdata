@@ -21,7 +21,7 @@ Overall system requirements for running the system are:
 
 ## System Architecture & Components
 
-![Alt text](transitdata_data_flow.png?raw=true "System Architecture")
+![Alt text](transitdata_data_flow_drawio.png?raw=true "System Architecture")
 
 
 Components are stored in their own Github Repositories:
@@ -45,4 +45,4 @@ All the components in this project use semver, but the output conforms always to
 
 ## Implementation notes
 
-Pulsar seems to cause approximately 5ms of latency for each message, which is consistent with their promise. The latency is not a problem in itself, and is well within acceptable bounds. However, the latency means that a single-threaded consumer-producer loop can only process 200 messages per second.  
+Pulsar seems to cause approximately 5ms of latency for each message, which is consistent with their promise. The latency is not a problem in itself, and is well within acceptable bounds. However, the latency means that a single-threaded consumer-producer loop can only process 200 messages per second.
