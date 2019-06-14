@@ -1,4 +1,3 @@
-
 ## General
 
 This system will poll updates to Pubtrans database (regarding departures and arrivals)
@@ -13,6 +12,7 @@ requirements for some of the services.
 ## Requirements
 
 Overall system requirements for running the system are:
+
 - Docker
 - Redis
 - Pulsar
@@ -22,10 +22,17 @@ Overall system requirements for running the system are:
 ## System Architecture & Components
 
 ![Alt text](transitdata_data_flow_drawio.png?raw=true "Transitdata System Architecture")
+![Alt text](transitdata_data_flow_drawio_details.png?raw=true "Transitdata System Architecture - a more detailed version")
 ![Alt text](transitlog_hfp_data_flow_drawio.png?raw=true "Transitlog System Architecture")
 
 Components are stored in their own Github Repositories:
+
+#### Common components
+
 - [transitdata-common](https://github.com/HSLdevcom/transitdata-common) contains generic components and shared constants.
+
+#### Transitdata components
+
 - [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) fills journey-metadata to Redis cache for the next step
 - [transitdata-pubtrans-source](https://github.com/HSLdevcom/transitdata-pubtrans-source) polls changes to Pubtrans database and publishes the events to Pulsar as "raw-data"
 - [transitdata-stop-estimates](https://github.com/HSLdevcom/transitdata-stop-estimates) creates higher-level data (StopEstimates) from the raw-data where the data source is abstracted (bus, metro, train).
@@ -38,6 +45,14 @@ Components are stored in their own Github Repositories:
 - [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) publishes GTFS-RT Full dataset based on the GTFS-RT TripUpdate topic.
 - [transitdata-pulsar-monitoring](https://github.com/HSLdevcom/transitdata-pulsar-monitoring) creates information about the state of the current pipeline for monitoring purposes
 
+#### Transitlog HFP components
+
+- [transitlog-alert-sink](https://github.com/HSLdevcom/transitlog-alert-sink) application for inserting service alerts to PostgreSQL
+- [transitlog-hfp-sink](https://github.com/HSLdevcom/transitlog-hfp-sink)
+  Insert HFP data from Pulsar to TimescaleDB
+- [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) parses MQTT raw topic & payload into Protobuf with HFP schema
+- [transitdata-hfp-deduplicator](https://github.com/HSLdevcom/transitdata-hfp-deduplicator) deduplicate data read from Pulsar topic(s)
+- [mqtt-pulsar-gateway](https://github.com/HSLdevcom/mqtt-pulsar-gateway) application for reading data from MQTT topic and feeding it into Pulsar topic. This application doesn't care about the payload, it just transfers the bytes.
 
 ## Versioning
 
