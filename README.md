@@ -22,7 +22,6 @@ Overall system requirements for running the system are:
 ## System Architecture & Components
 
 ![Alt text](transitdata_data_flow_drawio.png?raw=true "Transitdata System Architecture")
-![Alt text](transitdata_data_flow_drawio_details.png?raw=true "Transitdata System Architecture - a more detailed version")
 ![Alt text](transitlog_hfp_data_flow_drawio.png?raw=true "Transitlog System Architecture")
 
 Components are stored in their own Github Repositories:
