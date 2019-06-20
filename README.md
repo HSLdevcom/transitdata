@@ -26,7 +26,7 @@ Overall system requirements for running the system are:
 
 Components are stored in their own Github Repositories:
 
-#### Common components
+#### Common dependencies
 
 - [transitdata-common](https://github.com/HSLdevcom/transitdata-common) contains generic components and shared constants.
 
