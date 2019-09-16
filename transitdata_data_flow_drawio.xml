@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mxfile modified="2019-09-12T13:25:02.472Z" host="www.draw.io" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36" version="11.2.8" etag="GZqZMLr3aAkPI6c4tJdG" type="google" pages="6" compressed="false">
-  <diagram id="-179QDTScfD5ykh0UXd9">
-    <mxGraphModel dx="5546" dy="2448" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1040" pageHeight="1700" math="0" shadow="0">
+<mxfile modified="2019-09-16T06:39:02.853Z" host="www.draw.io" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36" version="11.2.8" etag="BkAW3zYsU5pZnBXGQg80" type="google" pages="6" compressed="false">
+  <diagram id="GzYzm0EVTo3IV9v_WAh7">
+    <mxGraphModel dx="5834" dy="2604" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1040" pageHeight="1700" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -26,7 +26,7 @@
             <mxPoint as="offset"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="7" value="MQTT broker (mqtt.cinfra.fi)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="7" value="MQTT broker&lt;br&gt;(mqtt.cinfra.fi)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-2699" y="-1402" width="259" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="8" value="Graylog Dashboard&lt;br&gt;for internal monitoring&lt;br&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
@@ -34,7 +34,7 @@
         </mxCell>
         <mxCell id="9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.811;exitY=-0.002;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=1;" edge="1" source="7" parent="1">
           <mxGeometry x="0.0091" relative="1" as="geometry">
-            <mxPoint x="-2487.3793103448274" y="-1479.7241379310344" as="targetPoint"/>
+            <mxPoint x="-2487.333333333333" y="-1479.8333333333333" as="targetPoint"/>
             <mxPoint x="-2482.5" y="-1382.5" as="sourcePoint"/>
             <Array as="points">
               <mxPoint x="-2487.5" y="-1441.5"/>
@@ -330,7 +330,7 @@
           <mxGeometry x="-2358.5" y="-1130" width="123" height="28" as="geometry"/>
         </mxCell>
         <mxCell id="70" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
-          <mxGeometry x="-3063" y="-1453.5" width="16" height="9" as="geometry"/>
+          <mxGeometry x="-3064" y="-1453" width="17" height="9" as="geometry"/>
         </mxCell>
         <mxCell id="71" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
           <mxGeometry x="-2835" y="-1131.5" width="19" height="9" as="geometry"/>
@@ -375,7 +375,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="82" value="Metro ATS MQTT Broker&lt;br&gt;(cmqttdev.cinfra.fi)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="82" value="MQTT Broker&lt;br&gt;(cmqttdev.cinfra.fi)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-2979" y="-189.5" width="120" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="83" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" source="84" target="97" parent="1">
@@ -475,7 +475,7 @@
         </mxCell>
         <mxCell id="104" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=block;endFill=1;" edge="1" source="78" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="-2776.344827586207" y="-1027.310344827586" as="targetPoint"/>
+            <mxPoint x="-2776.5" y="-1027.3333333333333" as="targetPoint"/>
             <Array as="points">
               <mxPoint x="-2853" y="-956"/>
               <mxPoint x="-2777" y="-956"/>
@@ -596,7 +596,7 @@
         <mxCell id="132" value="Vehicle-positions&lt;br&gt;(transitdata-gtfsrt-full-publisher)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="-3157.5" y="-1252.5" width="117" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="134" target="148" parent="1">
+        <mxCell id="133" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="134" target="147" parent="1">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="-3182" y="-1161"/>
@@ -650,36 +650,43 @@
           <mxGeometry x="-2186" y="-1129" width="120" height="31" as="geometry"/>
         </mxCell>
         <mxCell id="145" value="MQTT broker&lt;br&gt;(cmqttdev.cinfra.fi)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-3285" y="-1402" width="115" height="60" as="geometry"/>
+          <mxGeometry x="-3286.5" y="-1402" width="115" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="146" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=1;" edge="1" source="148" target="145" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="147" value="MQTT" style="text;html=1;resizable=0;points=[];align=center;verticalAlign=middle;labelBackgroundColor=#ffffff;" vertex="1" connectable="0" parent="146">
-          <mxGeometry x="0.3093" relative="1" as="geometry">
-            <mxPoint y="12" as="offset"/>
+        <mxCell id="146" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;endArrow=block;endFill=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" source="147" target="145" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-3251" y="-1311" as="targetPoint"/>
+            <Array as="points">
+              <mxPoint x="-3229" y="-1315"/>
+              <mxPoint x="-3229" y="-1315"/>
+            </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="148" value="Vehicle-positions&lt;br&gt;(pulsar-mqtt-gateway)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+        <mxCell id="147" value="Vehicle-positions&lt;br&gt;(pulsar-mqtt-gateway)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
           <mxGeometry x="-3287.5" y="-1252.5" width="117" height="60" as="geometry"/>
         </mxCell>
-        <mxCell id="149" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/tu" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="148" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/tu" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="-2690" y="-1314" width="105" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="150" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/sa" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="149" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/sa" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="-2540" y="-1314" width="105" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="151" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/tu" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="150" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/tu" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="-2689.5" y="-1453.5" width="105" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="152" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
-          <mxGeometry x="-2696.5" y="-1456" width="15" height="9" as="geometry"/>
+        <mxCell id="151" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="-2700" y="-1456" width="19" height="9" as="geometry"/>
         </mxCell>
-        <mxCell id="153" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/sa" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+        <mxCell id="152" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/[dev/v2]/fi/hsl/sa" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
           <mxGeometry x="-2540" y="-1453.5" width="105" height="30" as="geometry"/>
         </mxCell>
-        <mxCell id="154" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
+        <mxCell id="153" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
           <mxGeometry x="-2195.5" y="-1131.5" width="19" height="9" as="geometry"/>
+        </mxCell>
+        <mxCell id="154" value="&lt;span&gt;MQTT&lt;/span&gt;&lt;br&gt;gtfsrt/dev/fi/hsl/vp" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=1;labelBackgroundColor=none;opacity=90;dashed=1;dashPattern=1 1;fontSize=9;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="-3281.5" y="-1314" width="105" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="155" value="" style="html=1;verticalLabelPosition=bottom;align=center;labelBackgroundColor=#ffffff;verticalAlign=top;strokeWidth=2;strokeColor=#006600;fillColor=#ffffff;shadow=0;dashed=0;shape=mxgraph.ios7.icons.eye;rounded=0;dashPattern=1 1;fontSize=9;opacity=90;" vertex="1" parent="1">
+          <mxGeometry x="-3290" y="-1318" width="19" height="9" as="geometry"/>
         </mxCell>
       </root>
     </mxGraphModel>
