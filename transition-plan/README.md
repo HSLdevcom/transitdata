@@ -1,3 +1,5 @@
+Transition is done and this documentation will be archived.
+
 # HSL GTFS Realtime transition plan
 
 HSL is going to deprecate the systems called Muuli and Poikkeusinfo.
