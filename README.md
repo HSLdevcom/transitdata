@@ -21,7 +21,28 @@ Overall system requirements for running the system are:
 
 ## System Architecture & Components
 
+### Transitdata
+
 ![Alt text](transitdata_data_flow_drawio.png?raw=true "Transitdata System Architecture")
+
+#### Transitdata input
+- mqtt.hsl.fi vehicle position in hfp format (all)
+- hsl-mqtt-lab-a.confra.fi estimate for stop time (metros)
+- Pubtrans ROI: estimates for stop time (bus and trams)
+- Pubtrans DOI: static data (schedule, stops, routes)
+- api.digitransit.fi/realtime/service-alerts/v1: not used
+- OMM DB: service alerts (cancellations, disruptions)
+- raildigitraffic2gtfsrt: train stop estimates (to be replaced by a service connected to ratadigitraffic)
+
+#### Transitdata output
+
+- MQTT Broker cmqttdv.cinfra.fi: vehicle position in gtfs format (HSL displays at stops)
+- Azure storage -> Google maps: vehicle position, trips in gtfs format
+- MQTT Broker mqtt.cinfra.fi -> Reittiopas.fi: stop estimates in gtfs
+- Graylog server: logs from all the microservices	
+
+### Transitlog
+
 ![Alt text](transitlog_hfp_data_flow_drawio.png?raw=true "Transitlog System Architecture")
 
 Components are stored in their own Github Repositories:
