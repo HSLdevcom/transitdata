@@ -1,10 +1,10 @@
 ## General
 
-This system will poll updates to Pubtrans database (regarding departures and arrivals)
-and convert those to [GTFS real-time messages](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto) using a pipeline created with [Apache Pulsar](https://pulsar.incubator.apache.org/). The final step will output the messages via MQTT broker.
+This system will read real-time data from various sources (for example, Pubtrans database regarding departures and arrivals)
+and convert those to [GTFS real-time messages](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto) using a pipeline created with [Apache Pulsar](https://pulsar.incubator.apache.org/). The final step will publish the messages to different locations (such as MQTT brokers and blob storage).
 
 General usage pattern is to build Docker images and then run them with docker-compose.
-Services are separated to subfolders, each containing the source code and the Dockerfile.
+Services are separated to different GitHub repositories, each containing the source code and the Dockerfile.
 
 [/bin-folder](/bin) contains scripts to launch Docker images for Pulsar and Redis which are
 requirements for some of the services.
@@ -26,8 +26,8 @@ Overall system requirements for running the system are:
 ![Alt text](transitdata_data_flow_drawio.png?raw=true "Transitdata System Architecture")
 
 #### Transitdata input
-- mqtt.hsl.fi vehicle position in hfp format (all)
-- hsl-mqtt-lab-a.confra.fi estimate for stop time (metros)
+- mqtt.hsl.fi vehicle positions in [HFP](https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/) format (all vehicles)
+- hsl-mqtt-lab-a.confra.fi estimates for stop time (metros)
 - Pubtrans ROI: estimates for stop time (bus and trams)
 - Pubtrans DOI: static data (schedule, stops, routes)
 - api.digitransit.fi/realtime/service-alerts/v1: not used
@@ -38,7 +38,7 @@ Overall system requirements for running the system are:
 
 - MQTT Broker cmqttdv.cinfra.fi: vehicle position in gtfs format (HSL displays at stops)
 - Azure storage -> Google maps: vehicle position, trips in gtfs format
-- MQTT Broker mqtt.cinfra.fi -> Reittiopas.fi: stop estimates in gtfs
+- MQTT Broker mqtt.cinfra.fi -> Reittiopas.fi: stop estimates in GTFS-RT format
 - Graylog server: logs from all the microservices	
 
 ### Transitlog
@@ -53,17 +53,37 @@ Components are stored in their own Github Repositories:
 
 #### Transitdata components
 
+##### Sources
+
 - [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) fills journey-metadata to Redis cache for the next step
 - [transitdata-pubtrans-source](https://github.com/HSLdevcom/transitdata-pubtrans-source) polls changes to Pubtrans database and publishes the events to Pulsar as "raw-data"
-- [transitdata-stop-estimates](https://github.com/HSLdevcom/transitdata-stop-estimates) creates higher-level data (StopEstimates) from the raw-data where the data source is abstracted (bus, metro, train).
 - [transitdata-omm-cancellation-source](https://github.com/HSLdevcom/transitdata-omm-cancellation-source) reads OMM database and generates TripUpdate trip cancellations
-- [transitdata-hslalert-source](https://github.com/HSLdevcom/transitdata-hslalert-source) reads trip cancellations from HSL public HTML API and generates TripUpdate cancellations. This is for transition period support and will be removed in the near future.
+- [transitdata-omm-alert-source](https://github.com/HSLdevcom/transitdata-omm-alert-source) reads OMM database and generates internal service alert messages
+- [transitdata-stop-cancellation-source](https://github.com/HSLdevcom/transitdata-stop-cancellation-source) reads OMM database and generates internal service stop cancellation messages
+- [transitdata-rail-tripupdate-source](https://github.com/HSLdevcom/transitdata-rail-tripupdate-source) reads GTFS-RT trip updates from Digitransit rail trip update API
+- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) subscribes to a MQTT topic and publishes raw MQTT messages to a Pulsar topic, can be used with any MQTT-based data source
+
+##### Processors
+
+- [transitdata-hfp-deduplicator](https://github.com/HSLdevcom/transitdata-hfp-deduplicator) deduplicates messages. Despite the name, this application can be used for deduplicating other messages than just HFP messages
+- [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) parses raw HFP messages received from MQTT broker
+- [transitdata-metro-ats-parser](https://github.com/HSLdevcom/transitdata-metro-ats-parser) parses raw metro ATS messages received from MQTT broker
+- [transitdata-metro-ats-cancellation-source](https://github.com/HSLdevcom/transitdata-metro-ats-cancellation-source) creates cancellation messages from metro ATS messages
+- [transitdata-stop-estimates](https://github.com/HSLdevcom/transitdata-stop-estimates) creates higher-level data (StopEstimates) from the raw-data where the data source is abstracted (bus, metro, train)
 - [transitdata-tripupdate-processor](https://github.com/HSLdevcom/transitdata-tripupdate-processor) reads the estimates and cancellations and generates GTFS-RT messages and publishes them to Pulsar
-- [transitdata-omm-alert-source](https://github.com/HSLdevcom/transitdata-omm-alert-source) reads OMM database and generates internal service alert messages.
 - [transitdata-alert-processor](https://github.com/HSLdevcom/transitdata-alert-processor) reads internal service alert messages and generates GTFS-RT Service alerts
-- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) routes Pulsar messages to MQTT broker.
-- [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) publishes GTFS-RT Full dataset based on the GTFS-RT TripUpdate topic.
+- [transitdata-vehicleposition-processor](https://github.com/HSLdevcom/transitdata-alert-processor) generates GTFS-RT vehicle position messages from HFP messages
+- [transitdata-stop-cancellation-processor](https://github.com/HSLdevcom/transitdata-stop-cancellation-processor) applies stop cancellations to GTFS-RT trip updates
+
+##### Publishers
+
+- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) routes Pulsar messages to MQTT broker
+- [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) publishes GTFS-RT Full dataset
 - [transitdata-pulsar-monitoring](https://github.com/HSLdevcom/transitdata-pulsar-monitoring) creates information about the state of the current pipeline for monitoring purposes
+
+##### Unused components
+
+- [transitdata-hslalert-source](https://github.com/HSLdevcom/transitdata-hslalert-source) reads trip cancellations from HSL public HTML API and generates TripUpdate cancellations. Not in use anymore.
 
 #### Transitlog HFP components
 
