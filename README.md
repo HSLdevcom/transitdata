@@ -27,7 +27,7 @@ Overall system requirements for running the system are:
 
 #### Transitdata input
 - mqtt.hsl.fi vehicle position in hfp format (all)
-- hsl-mqtt-lab-a.confra.fi estimate for stop time (metros)
+- hsl-mqtt-lab-a.cinfra.fi estimate for stop time (metros)
 - Pubtrans ROI: estimates for stop time (bus and trams)
 - Pubtrans DOI: static data (schedule, stops, routes)
 - api.digitransit.fi/realtime/service-alerts/v1: not used
@@ -36,10 +36,11 @@ Overall system requirements for running the system are:
 
 #### Transitdata output
 
-- MQTT Broker cmqttdv.cinfra.fi: vehicle position in gtfs format (HSL displays at stops)
-- Azure storage -> Google maps: vehicle position, trips in gtfs format
-- MQTT Broker mqtt.cinfra.fi -> Reittiopas.fi: stop estimates in gtfs
-- Graylog server: logs from all the microservices	
+- MQTT Broker cmqttdv.cinfra.fi: vehicle position in GTFS-RT format (HSL displays at stops)
+- Azure storage -> Google maps: vehicle position, trips in GTFS-RT format
+- MQTT Broker pred.rt.hsl.fi -> Reittiopas.fi: stop estimates in GTFS-RT format
+  - **Note:** this MQTT broker is intended to be used by HSL systems only. Its functionality can be changed without a notice and there is no guarantee that it will work for third-party applications. 
+- Graylog server: logs from all the microservices.
 
 ### Transitlog
 
