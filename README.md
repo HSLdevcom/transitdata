@@ -33,11 +33,12 @@ Overall system requirements for running the system are:
 - api.digitransit.fi/realtime/service-alerts/v1: not used
 - OMM DB: service alerts (cancellations, disruptions)
 - raildigitraffic2gtfsrt: train stop estimates (to be replaced by a service connected to ratadigitraffic)
+- sm5.rt.hsl.fi: EKE message from SM5 trains
 
 #### Transitdata output
 
 - MQTT Broker cmqttdv.cinfra.fi: vehicle position in GTFS-RT format (HSL displays at stops)
-- Azure storage -> Google maps: vehicle position, trips in GTFS-RT format
+- Azure Blob storage: used for publishing vehicle position, trip updates and service alerts in GTFS-RT format (for Google Maps and 3rd-party applications) and for archiving messages (HFP and EKE) in CSV files
 - MQTT Broker pred.rt.hsl.fi -> Reittiopas.fi: stop estimates in GTFS-RT format
   - **Note:** this MQTT broker is intended to be used by HSL systems only. Its functionality can be changed without a notice and there is no guarantee that it will work for third-party applications.
 - Graylog server: logs from all the microservices.
