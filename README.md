@@ -26,18 +26,17 @@ Overall system requirements for running the system are:
 ![Alt text](transitdata_data_flow_drawio.png?raw=true "Transitdata System Architecture")
 
 #### Transitdata input
-- mqtt.hsl.fi vehicle positions in [HFP](https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/) format (all vehicles)
-- hsl-mqtt-lab-a.cinfra.fi estimates for stop time (metros)
-- Pubtrans ROI: estimates for stop time (bus and trams)
+- mqtt.hsl.fi: vehicle positions in [HFP](https://digitransit.fi/en/developers/apis/4-realtime-api/vehicle-positions/) format (all vehicles)
+- hsl-mqtt-lab-a.cinfra.fi: estimates for stop time (metros)
+- Pubtrans ROI: estimates for stop time (buses, trams, trains)
 - Pubtrans DOI: static data (schedule, stops, routes)
-- api.digitransit.fi/realtime/service-alerts/v1: not used
 - OMM DB: service alerts (cancellations, disruptions)
-- raildigitraffic2gtfsrt: train stop estimates (to be replaced by a service connected to ratadigitraffic)
 - sm5.rt.hsl.fi: EKE message from SM5 trains
+- apc.rt.hsl.fi: Passenger count data
 
 #### Transitdata output
 
-- MQTT Broker cmqttdv.cinfra.fi: vehicle position in GTFS-RT format (HSL displays at stops)
+- MQTT Broker cmqttdev.cinfra.fi: vehicle position in GTFS-RT format (HSL displays at stops)
 - Azure Blob storage: used for publishing vehicle position, trip updates and service alerts in GTFS-RT format (for Google Maps and 3rd-party applications) and for archiving messages (HFP and EKE) in CSV files
 - MQTT Broker pred.rt.hsl.fi -> Reittiopas.fi: stop estimates in GTFS-RT format
   - **Note:** this MQTT broker is intended to be used by HSL systems only. Its functionality can be changed without a notice and there is no guarantee that it will work for third-party applications.
@@ -55,6 +54,8 @@ Components are stored in their own Github Repositories:
 
 #### Transitdata components
 
+**Note:** this does not contain comprehensive list of services in Transitdata. Search for `transitdata-` in GitHub to find all Transitdata services.
+
 ##### Sources
 
 - [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) fills journey-metadata to Redis cache for the next step
@@ -62,7 +63,6 @@ Components are stored in their own Github Repositories:
 - [transitdata-omm-cancellation-source](https://github.com/HSLdevcom/transitdata-omm-cancellation-source) reads OMM database and generates TripUpdate trip cancellations
 - [transitdata-omm-alert-source](https://github.com/HSLdevcom/transitdata-omm-alert-source) reads OMM database and generates internal service alert messages
 - [transitdata-stop-cancellation-source](https://github.com/HSLdevcom/transitdata-stop-cancellation-source) reads OMM database and generates internal service stop cancellation messages
-- [transitdata-rail-tripupdate-source](https://github.com/HSLdevcom/transitdata-rail-tripupdate-source) reads GTFS-RT trip updates from Digitransit rail trip update API
 - [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) subscribes to a MQTT topic and publishes raw MQTT messages to a Pulsar topic, can be used with any MQTT-based data source
 
 ##### Processors
@@ -81,17 +81,18 @@ Components are stored in their own Github Repositories:
 
 - [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) routes Pulsar messages to MQTT broker
 - [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) publishes GTFS-RT Full dataset
-- [transitdata-pulsar-monitoring](https://github.com/HSLdevcom/transitdata-pulsar-monitoring) creates information about the state of the current pipeline for monitoring purposes
 
-##### Unused components
+##### Other
 
-- [transitdata-hslalert-source](https://github.com/HSLdevcom/transitdata-hslalert-source) reads trip cancellations from HSL public HTML API and generates TripUpdate cancellations. Not in use anymore.
+These components are not connected to the Pulsar cluster, but they are deployed to the same environment as Transitdata and they produce data that Transitdata uses
+
+- [suomenlinna-ferry-hfp](https://github.com/HSLdevcom/suomenlinna-ferry-hfp) Creates HFP messages for Suomenlinna ferries from AIS data
+- [gtfsrt2hfp](https://github.com/HSLdevcom/gtfsrt2hfp) Creates HFP messages from GTFS-RT vehicle positions, currently used for U-bus 280 
 
 #### Transitlog HFP components
 
 - [transitlog-alert-sink](https://github.com/HSLdevcom/transitlog-alert-sink) application for inserting service alerts to PostgreSQL
-- [transitlog-hfp-sink](https://github.com/HSLdevcom/transitlog-hfp-sink)
-  Insert HFP data from Pulsar to TimescaleDB
+- [transitlog-hfp-split-sink](https://github.com/HSLdevcom/transitlog-hfp-split-sink) Insert HFP data from Pulsar to Transitlog DB (Citus)
 - [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) parses MQTT raw topic & payload into Protobuf with HFP schema
 - [transitdata-hfp-deduplicator](https://github.com/HSLdevcom/transitdata-hfp-deduplicator) deduplicate data read from Pulsar topic(s)
 - [mqtt-pulsar-gateway](https://github.com/HSLdevcom/mqtt-pulsar-gateway) application for reading data from MQTT topic and feeding it into Pulsar topic. This application doesn't care about the payload, it just transfers the bytes.
