@@ -105,7 +105,9 @@ These components are not connected to the Pulsar cluster, but they are deployed 
 
 ## Versioning
 
-All the components in this project use semver, but the output conforms always to the GTFS Realtime standard. Some vendor-specific extensions might be added, which require incrementing the major version. Otherwise, new features should only increment the minor version, but some exceptions might arise. TripUpdate and ServiceAlert APIs are versioned independently.
+All of the main components in this project are versioned with the following scheme: `x.y.z`, where x is always 1, y is incremented when the output of the component is not backwards-compatible and z is incremented when the output is compatible. Most of the internal message protobufs include field for schema version, which can be used to make sure that incompatible messages are not processed. Because the services are deployed together at the same time, usually it is possible to just do changes to all necessary services at the same time.
+
+The GTFS-RT output should conform to the [GTFS Realtime standard](https://developers.google.com/transit/gtfs-realtime), version 2.0.
 
 ## Implementation notes
 
