@@ -1,13 +1,12 @@
 ## General
 
 This system will read real-time data from various sources (for example, Pubtrans database regarding departures and arrivals)
-and convert those to [GTFS real-time messages](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto) using a pipeline created with [Apache Pulsar](https://pulsar.incubator.apache.org/). The final step will publish the messages to different locations (such as MQTT brokers and blob storage).
+and convert those to [GTFS real-time messages](https://developers.google.com/transit/gtfs-realtime/gtfs-realtime-proto) using a pipeline created with [Apache Pulsar](https://pulsar.apache.org/). The final step will publish the messages to different locations (such as MQTT brokers and blob storage).
 
 General usage pattern is to build Docker images and then run them with docker-compose.
 Services are separated to different GitHub repositories, each containing the source code and the Dockerfile.
 
-[/bin-folder](/bin) contains scripts to launch Docker images for Pulsar and Redis which are
-requirements for some of the services.
+[/bin-folder](/bin) contains scripts to launch Docker images for Pulsar, Redis and Mosquitto MQTT broker which are requirements for some of the services.
 
 ## Requirements
 
@@ -50,44 +49,51 @@ Components are stored in their own Github Repositories:
 
 #### Common dependencies
 
-- [transitdata-common](https://github.com/HSLdevcom/transitdata-common) contains generic components and shared constants.
+- [transitdata-common](https://github.com/HSLdevcom/transitdata-common) - Contains Protobuf definitions, shared constants and generic components, such as an abstract class for connecting to Pulsar
 
 #### Transitdata components
 
-**Note:** this does not contain comprehensive list of services in Transitdata. Search for `transitdata-` in GitHub to find all Transitdata services.
-
 ##### Sources
 
-- [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) fills journey-metadata to Redis cache for the next step
-- [transitdata-pubtrans-source](https://github.com/HSLdevcom/transitdata-pubtrans-source) polls changes to Pubtrans database and publishes the events to Pulsar as "raw-data"
-- [transitdata-omm-cancellation-source](https://github.com/HSLdevcom/transitdata-omm-cancellation-source) reads OMM database and generates TripUpdate trip cancellations
-- [transitdata-omm-alert-source](https://github.com/HSLdevcom/transitdata-omm-alert-source) reads OMM database and generates internal service alert messages
-- [transitdata-stop-cancellation-source](https://github.com/HSLdevcom/transitdata-stop-cancellation-source) reads OMM database and generates internal service stop cancellation messages
-- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) subscribes to a MQTT topic and publishes raw MQTT messages to a Pulsar topic, can be used with any MQTT-based data source
+- [transitdata-cache-bootstrapper](https://github.com/HSLdevcom/transitdata-cache-bootstrapper) - Reads static data such as routes from PubTrans DOI DB and inserts that to Redis
+- [transitdata-pubtrans-source](https://github.com/HSLdevcom/transitdata-pubtrans-source) - Polls new stop time predictions from PubTrans ROI DB and publishes them to a Pulsar topic
+- [transitdata-omm-cancellation-source](https://github.com/HSLdevcom/transitdata-omm-cancellation-source) - Reads OMM database and generates trip cancellations
+- [transitdata-omm-alert-source](https://github.com/HSLdevcom/transitdata-omm-alert-source) - Reads OMM database and generates internal service alert messages
+- [transitdata-stop-cancellation-source](https://github.com/HSLdevcom/transitdata-stop-cancellation-source)  - Reads OMM database and generates internal stop cancellation messages
+- [mqtt-pulsar-gateway](https://github.com/HSLdevcom/mqtt-pulsar-gateway) - Subscribes to a MQTT topic and publishes raw MQTT messages to a Pulsar topic, can be used with any MQTT-based data source
 
 ##### Processors
 
-- [transitdata-hfp-deduplicator](https://github.com/HSLdevcom/transitdata-hfp-deduplicator) deduplicates messages. Despite the name, this application can be used for deduplicating other messages than just HFP messages
-- [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) parses raw HFP messages received from MQTT broker
-- [transitdata-metro-ats-parser](https://github.com/HSLdevcom/transitdata-metro-ats-parser) parses raw metro ATS messages received from MQTT broker
-- [transitdata-metro-ats-cancellation-source](https://github.com/HSLdevcom/transitdata-metro-ats-cancellation-source) creates cancellation messages from metro ATS messages
-- [transitdata-stop-estimates](https://github.com/HSLdevcom/transitdata-stop-estimates) creates higher-level data (StopEstimates) from the raw-data where the data source is abstracted (bus, metro, train)
-- [transitdata-tripupdate-processor](https://github.com/HSLdevcom/transitdata-tripupdate-processor) reads the estimates and cancellations and generates GTFS-RT messages and publishes them to Pulsar
-- [transitdata-alert-processor](https://github.com/HSLdevcom/transitdata-alert-processor) reads internal service alert messages and generates GTFS-RT Service alerts
-- [transitdata-vehicleposition-processor](https://github.com/HSLdevcom/transitdata-alert-processor) generates GTFS-RT vehicle position messages from HFP messages
-- [transitdata-stop-cancellation-processor](https://github.com/HSLdevcom/transitdata-stop-cancellation-processor) applies stop cancellations to GTFS-RT trip updates
+- [transitdata-hfp-deduplicator](https://github.com/HSLdevcom/transitdata-hfp-deduplicator) - Deduplicates messages. Despite the name, this application can be used for deduplicating other messages than just HFP messages
+- [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) - Parses raw HFP / APC messages received from MQTT broker
+- [transitdata-metro-ats-parser](https://github.com/HSLdevcom/transitdata-metro-ats-parser) - Parses raw metro ATS messages received from MQTT broker
+- [transitdata-metro-ats-cancellation-source](https://github.com/HSLdevcom/transitdata-metro-ats-cancellation-source) - Creates cancellation messages from raw metro ATS messages
+- [transitdata-stop-estimates](https://github.com/HSLdevcom/transitdata-stop-estimates) - Creates higher-level data (StopEstimates) from the raw-data where the data source is abstracted (bus, metro, train)
+- [transitdata-tripupdate-processor](https://github.com/HSLdevcom/transitdata-tripupdate-processor) - Reads the estimates and cancellations and generates GTFS-RT messages
+- [transitdata-alert-processor](https://github.com/HSLdevcom/transitdata-alert-processor) - Reads internal service alert messages and generates GTFS-RT Service alerts
+- [transitdata-vehicleposition-processor](https://github.com/HSLdevcom/transitdata-vehicleposition-processor) - Generates GTFS-RT vehicle position messages from HFP messages, adding passenger count data from APC messages if available
+- [transitdata-stop-cancellation-processor](https://github.com/HSLdevcom/transitdata-stop-cancellation-processor) - Applies stop cancellations to GTFS-RT trip updates
+- [transitdata-partial-apc-expander-combiner](https://github.com/HSLdevcom/transitdata-partial-apc-expander-combiner) - Combines multiple partial APC messages and expands them with metadata from HFP to create full APC messages
+- [transitdata-apc-protobuf-json-transformer](https://github.com/HSLdevcom/transitdata-apc-protobuf-json-transformer) - Transforms APC messages in Protobuf format to JSON for sending them back to MQTT broker
 
 ##### Publishers
 
-- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) routes Pulsar messages to MQTT broker
-- [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) publishes GTFS-RT Full dataset
+- [pulsar-mqtt-gateway](https://github.com/HSLdevcom/pulsar-mqtt-gateway) - Publishes Pulsar messages to a MQTT broker
+- [transitdata-gtfsrt-full-publisher](https://github.com/HSLdevcom/transitdata-gtfsrt-full-publisher) - Publishes GTFS-RT Full datasets to Azure Blob Storage
+- [transitdata-eke-sink](https://github.com/HSLdevcom/transitdata-eke-sink) - Collects EKE messages to hourly files and publishes them to Azure Blob Storage
 
 ##### Other
 
 These components are not connected to the Pulsar cluster, but they are deployed to the same environment as Transitdata and they produce data that Transitdata uses
 
-- [suomenlinna-ferry-hfp](https://github.com/HSLdevcom/suomenlinna-ferry-hfp) Creates HFP messages for Suomenlinna ferries from AIS data
-- [gtfsrt2hfp](https://github.com/HSLdevcom/gtfsrt2hfp) Creates HFP messages from GTFS-RT vehicle positions, currently used for U-bus 280 
+- [suomenlinna-ferry-hfp](https://github.com/HSLdevcom/suomenlinna-ferry-hfp) - Creates HFP messages for Suomenlinna ferries from AIS data
+- [gtfsrt2hfp](https://github.com/HSLdevcom/gtfsrt2hfp) - Creates HFP messages from GTFS-RT vehicle positions, currently used for U-bus 280
+
+##### Monitoring and testing
+
+- [transitdata-tests](https://github.com/HSLdevcom/transitdata-tests) - Contains code for Transitdata E2E tests
+- [transitdata-monitor-data-collector](https://github.com/HSLdevcom/transitdata-monitor-data-collector) - Collects data from Transitdata (Pulsar message rates, MQTT message rates, GTFS-RT feeds) and sends it to Azure Monitoring
+- [transitdata-db-monitoring](https://github.com/HSLdevcom/transitdata-db-monitoring) - Tool for periodically checking whether database connections are working, **not in use currently**
 
 #### Transitlog HFP components
 
@@ -99,7 +105,9 @@ These components are not connected to the Pulsar cluster, but they are deployed 
 
 ## Versioning
 
-All the components in this project use semver, but the output conforms always to the GTFS Realtime standard. Some vendor-specific extensions might be added, which require incrementing the major version. Otherwise, new features should only increment the minor version, but some exceptions might arise. TripUpdate and ServiceAlert APIs are versioned independently.
+All of the main components in this project are versioned with the following scheme: `x.y.z`, where x is always 1, y is incremented when the output of the component is not backwards-compatible and z is incremented when the output is compatible. Most of the internal message protobufs include field for schema version, which can be used to make sure that incompatible messages are not processed. Because the services are deployed together at the same time, usually it is possible to just do changes to all necessary services at the same time.
+
+The GTFS-RT output should conform to the [GTFS Realtime standard](https://developers.google.com/transit/gtfs-realtime), version 2.0.
 
 ## Implementation notes
 
