@@ -97,6 +97,8 @@ These components are not connected to the Pulsar cluster, but they are deployed 
 
 #### Transitlog HFP components
 
+**Note:** this list does not contain all transitlog services. Search for `transitlog` in hsldevcom GitHub
+
 - [transitlog-alert-sink](https://github.com/HSLdevcom/transitlog-alert-sink) application for inserting service alerts to PostgreSQL
 - [transitlog-hfp-split-sink](https://github.com/HSLdevcom/transitlog-hfp-split-sink) Insert HFP data from Pulsar to Transitlog DB (Citus)
 - [transitdata-hfp-parser](https://github.com/HSLdevcom/transitdata-hfp-parser) parses MQTT raw topic & payload into Protobuf with HFP schema
