@@ -16,19 +16,20 @@ This page describes how to run Pulsar-connected services of Transitdata locally
 
 ## How to run Transitdata
 
-1. Set up necessary dependencies
-2. Check the [architecture diagram](https://raw.githubusercontent.com/HSLdevcom/transitdata/master/transitdata_data_flow_drawio.png) to see which services you want to run
+1. Check the [architecture diagram](https://raw.githubusercontent.com/HSLdevcom/transitdata/master/transitdata_data_flow_drawio.png) to see which services you want to run
 3. Build Docker images for necessary services or use ones from hsldevcom Docker Hub
    * Docker images are named `hsldevcom/<service name>`, e.g. `hsldevcom/transitdata-vehicleposition-processor`
+1. Set up necessary dependencies
+   * At least Pulsar is needed, see READMEs for other dependencies
 4. Start Docker containers for all services with necessary environment variables
    * All services need at least `PULSAR_HOST` and `PULSAR_PORT` variables, which default to `localhost` and `6650` respectively
    * Also `PULSAR_CONSUMER_TOPIC` and `PULSAR_PRODUCER_TOPIC` might have to be changed from the defaults
     * The idea is to create a pipeline where services read data from a certain topic and write to another
-   * Check other environment variables from services README or `src/main/resources/environment.conf`
+   * Check other environment variables from services README or `src/main/resources/environment.conf` file
 
 ### Docker Compose
 
-Docker Compose might be helpful when running Transitdata locally as it allows defining all services in a single file. Here's an example of running services that generate GTFS-RT vehicle positions:
+Docker Compose might be helpful when running Transitdata locally as it allows defining all services in a single file. Here's an example for running services for publishing GTFS-RT vehicle positions:
 
 ```yml
 services:
