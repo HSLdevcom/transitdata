@@ -127,16 +127,16 @@ Golden Signals (homepage)
 | **GTFS-RT scrape errors** | Timeseries | `sum(rate(gtfsrt_scrape_attempts_total{result!="success"}[$__rate_interval])) by (url, result)` | Error rates by type |
 | **MQTT broker connectivity** | Stat (red/green) | `sum by (broker) (mqtt_connected)` | Connected/Disconnected per broker |
 | **Pod restarts** | Timeseries | `sum(increase(kube_pod_container_status_restarts_total{namespace="$k8s_namespace"}[$__rate_interval])) by (pod)` | Crash loops |
-| **Logged errors** | Timeseries | *Requires new metric (see section 7)* | Error count by severity per microservice |
+| **Logged errors** | Timeseries | *Requires new metric (see section 6)* | Error count by severity per microservice |
 
 #### Row 3: Duration / Lag (D + L)
 
 | Panel | Type | Query | Notes |
 |-------|------|-------|-------|
 | **GTFS-RT feed age** | Timeseries | `sum by (url) (rate(gtfsrt_timestamp_age_seconds_sum[$__rate_interval]) / rate(gtfsrt_timestamp_age_seconds_count[$__rate_interval]))` | How stale each feed is |
-| **E2E latency: ptROI -> GTFS-RT Trip Updates** | Timeseries | *Requires new metric (see section 7)* | End-to-end prediction latency |
-| **E2E latency: APC source -> finished APC** | Timeseries | *Requires new metric (see section 7)* | End-to-end APC latency |
-| **DB polling latency** | Timeseries | *Requires new metric (see section 7)* | ptROI/ptDOI/OMM query duration |
+| **E2E latency: ptROI -> GTFS-RT Trip Updates** | Timeseries | *Requires new metric (see section 6)* | End-to-end prediction latency |
+| **E2E latency: APC source -> finished APC** | Timeseries | *Requires new metric (see section 6)* | End-to-end APC latency |
+| **DB polling latency** | Timeseries | *Requires new metric (see section 6)* | ptROI/ptDOI/OMM query duration |
 | **Pulsar oldest unacked age (top-N)** | Timeseries | `time() * 1000 - pulsar_subscription_oldest_msg_publish_time_ms{cluster=~"$cluster", namespace=~"$namespace"}` | Watermark staleness (consumer lag in time) |
 
 #### Row 4: Saturation (S)
@@ -164,9 +164,9 @@ Each domain flow dashboard follows the same structure:
 | Component Kind | Panels |
 |---------------|--------|
 | **MQTT broker** | Connection status (`mqtt_connected`), message rate (`rate(mqtt_messages_received_total)`), connection losses |
-| **Database** | Polling rate, poll latency, query errors, rows returned *(new metrics -- see section 7)* |
+| **Database** | Polling rate, poll latency, query errors, rows returned *(new metrics -- see section 6)* |
 | **Redis** | Connection status, memory usage, key count *(from Redis exporter or kube metrics)* |
-| **Java microservice** | Pod ready/restart status, CPU, memory, logged errors *(new metric -- see section 7)* |
+| **Java microservice** | Pod ready/restart status, CPU, memory, logged errors *(new metric -- see section 6)* |
 | **Pulsar topic** | Message rate in (`pulsar_rate_in`), backlog per subscription (`pulsar_msg_backlog`), storage size (`pulsar_storage_size`) |
 
 ---
@@ -416,7 +416,7 @@ Consolidates and extends the existing `gtfsrt-dashboard.json`.
 
 #### Row 4: Duration / Freshness
 - **Feed timestamp age by URL:** avg seconds since last feed header timestamp
-- **HTTP request duration:** *Requires new metric -- see section 7*
+- **HTTP request duration:** *Requires new metric -- see section 6*
 
 #### Row 5: Errors
 - **Scrape errors by type:** `rate(gtfsrt_scrape_attempts_total{result!="success"}[$__rate_interval])` grouped by `url`, `result`
@@ -454,7 +454,7 @@ Brokers and their topic filters (from prod deployment):
 
 **Purpose:** Cross-cutting view of all external database connections and polling health. Linked from domain flow dashboards when a DB component is shown.
 
-*Polling metrics are new and must be instrumented -- see section 7.*
+*Polling metrics are new and must be instrumented -- see section 6.*
 
 #### Row per database:
 
@@ -522,55 +522,11 @@ Label: `source` = `pubtrans-roi-arrival`, `pubtrans-roi-departure`, `pubtrans-do
 
 ---
 
-## 6. Alerting Rules
-
-### 6.1 Alerting Strategy
-
-- Use **Grafana-managed alerting** (Grafana Alerting with Prometheus data source) since there is no existing Prometheus-based alerting solution
-- Each alert includes annotation `dashboard_url` linking to the relevant Grafana dashboard + panel
-- Alert severity levels: `critical` (pages/immediate), `warning` (investigate soon), `info` (FYI)
-- Notification channels: TBD (Slack, PagerDuty, email, etc.)
-
-### 6.2 Proposed Alert Rules
-
-#### Critical Alerts
-
-| Alert | Condition | For | Links to |
-|-------|-----------|-----|----------|
-| **GTFS-RT feed down** | `gtfsrt_last_scrape_success == 0` | 5m | GTFS-RT APIs dashboard |
-| **MQTT broker disconnected** | `mqtt_connected == 0` | 2m | MQTT Overview dashboard |
-| **Pulsar topic rate zero** (ingestion topics) | `sum(pulsar_rate_in{topic=~".*hfp-mqtt-raw.*"}) == 0` | 5m | Vehicle Positions / APC domain flow dashboard |
-| **GTFS-RT output rate zero** | `sum(pulsar_rate_in{topic=~".*feedmessage-vehicleposition\|.*feedmessage-tripupdate"}) == 0` | 5m | Predictions / Vehicle Positions domain flow dashboard |
-| **Pod CrashLooping** | `increase(kube_pod_container_status_restarts_total[15m]) > 3` (filtered by Transitdata pods) | 0m | Infrastructure dashboard |
-
-#### Warning Alerts
-
-| Alert | Condition | For | Links to |
-|-------|-----------|-----|----------|
-| **GTFS-RT feed stale** | `gtfsrt_timestamp_age_seconds avg > 120` | 5m | GTFS-RT APIs dashboard |
-| **Pulsar backlog growing** | `pulsar_msg_backlog > 10000` | 10m | Data Flow dashboard (backlog panel) |
-| **Pulsar oldest unacked message** | `(time()*1000 - pulsar_subscription_oldest_msg_publish_time_ms) / 1000 > 300` | 5m | Data Flow dashboard (lag panel) |
-| **Pulsar ingestion rate drop** | `sum(pulsar_rate_in{topic=~".*hfp-mqtt-raw/v2"}) < <baseline> * 0.5` | 10m | Data Flow dashboard, row 1 |
-| **DB polling errors** | `rate(transitdata_db_poll_errors_total[5m]) > 0` | 5m | Database Polling dashboard |
-| **Memory usage high** | `container_memory_working_set_bytes / container_spec_memory_limit_bytes > 0.9` | 10m | Infrastructure dashboard |
-| **Pod not ready** | `kube_deployment_status_replicas_ready < kube_deployment_spec_replicas` | 5m | Infrastructure dashboard |
-
-#### Info Alerts
-
-| Alert | Condition | For | Links to |
-|-------|-----------|-----|----------|
-| **MQTT message rate anomaly** | `rate(mqtt_messages_received_total[5m]) < <baseline> * 0.3` | 15m | MQTT Sources dashboard |
-| **Pulsar storage growing** | `pulsar_storage_size > <threshold_bytes>` | 30m | Data Flow dashboard (storage panel) |
-
-> **Note:** Threshold values marked `<baseline>` and `<threshold_bytes>` need to be calibrated based on observed traffic patterns. Consider using recording rules for baseline calculations, e.g., `avg_over_time(sum(pulsar_rate_in{...})[7d:1h])`.
-
----
-
-## 7. New Metrics Required
+## 6. New Metrics Required
 
 These metrics do not exist today and need to be instrumented in the microservices or in transitdata-metrics-exporter.
 
-### 7.1 GTFS-RT HTTP Request Duration
+### 6.1GTFS-RT HTTP Request Duration
 
 **Where:** transitdata-metrics-exporter (already makes HTTP requests to GTFS-RT endpoints)
 
@@ -580,7 +536,7 @@ These metrics do not exist today and need to be instrumented in the microservice
 
 **Implementation:** Record the time between HTTP request start and response received in `GtfsRtMetricsExporter`. Micrometer `Timer` or manual `DistributionSummary` on elapsed time.
 
-### 7.2 Database Polling Metrics
+### 6.2Database Polling Metrics
 
 **Where:** Each database-polling microservice (`transitdata-pubtrans-arrival-source`, `transitdata-pubtrans-departure-source`, `transitdata-omm-cancellation-source`, `transitdata-omm-alert-source`, `transitdata-stop-cancellation-source`, `transitdata-metro-ats-cancellation-source`)
 
@@ -594,7 +550,7 @@ These metrics do not exist today and need to be instrumented in the microservice
 
 **Decision needed:** Instrument each microservice individually, or create a shared library in `transitdata-common`? Recommendation: add a metrics utility to `transitdata-common` and use it from each service. This keeps the Prometheus endpoint setup and metric definitions consistent.
 
-### 7.3 End-to-End Latency Metrics
+### 6.3End-to-End Latency Metrics
 
 **Where:** Output-stage microservices that can compute the difference between the original event timestamp and the current time.
 
@@ -608,7 +564,7 @@ Pipelines:
 
 **Implementation:** The Pulsar message publish timestamp or the embedded event timestamp from the protobuf message can serve as the start time. Compute `System.currentTimeMillis() - eventTimestamp` at the output processor.
 
-### 7.4 Logged Error Counts
+### 6.4Logged Error Counts
 
 **Option A (recommended):** Use Prometheus log-based metrics via a log exporter sidecar (e.g., `mtail` or `promtail` with metrics).
 
@@ -620,7 +576,7 @@ Pipelines:
 
 ---
 
-## 8. Implementation Plan
+## 7. Implementation Plan
 
 ### Phase 1: Dashboards Using Existing Metrics (no new instrumentation needed)
 
@@ -628,7 +584,7 @@ Pipelines:
 2. **Create domain flow dashboards** (sections 5.2.1--5.2.5) using existing Pulsar metrics (`pulsar_rate_in`, `pulsar_msg_backlog`, `pulsar_storage_size`), MQTT metrics (`mqtt_connected`, `mqtt_messages_received_total`), and kube metrics for service pod status. Confirm missing Pulsar topic names (EKE, cancellation, service alert topics) from the cluster.
 3. **Consolidate GTFS-RT dashboard** into the new hierarchy (section 5.3)
 4. **Add dashboard links** -- Golden Signals links to domain flow dashboards, domain flow topic panels link to built-in Pulsar Topic Metrics dashboard
-5. **Set up Grafana Alerting** with critical and warning rules from section 6.2 that use existing metrics
+5. **Set up Grafana Alerting** with critical and warning rules that use existing metrics
 
 ### Phase 2: Instrument New Metrics in transitdata-metrics-exporter
 
@@ -660,7 +616,7 @@ Pipelines:
 
 ---
 
-## 9. Open Questions
+## 8. Open Questions
 
 1. **Backlog thresholds:** What Pulsar backlog counts should trigger warnings? Need to observe baseline during normal operations and set thresholds at e.g., 2x-5x normal.
 2. **GTFS-RT feed age thresholds:** What's an acceptable timestamp age? 60s? 120s? This varies by feed type (service alerts update less frequently than vehicle positions).
